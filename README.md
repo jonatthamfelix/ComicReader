@@ -17,6 +17,17 @@ frontend/                    app React
   src/types/                 tipos espelhando o contrato da API
 ```
 
+## Banco
+
+SQL Server LocalDB, instância `(localdb)\MSSQLLocalDB`, banco `ComicReader`. A connection string fica em `backend/ComicReader.Api/appsettings.json`.
+
+Primeira vez (ou após adicionar migration):
+
+```
+cd backend/ComicReader.Api
+dotnet ef database update
+```
+
 ## Como rodar
 
 Terminal 1 (API em http://localhost:5039):
