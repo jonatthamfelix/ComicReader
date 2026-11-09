@@ -37,6 +37,31 @@ public static class ComicEndpoints
             return Results.Created($"/api/comics/{comic.Id}", comic);
         });
 
+        app.MapGet("/api/comics/{id:int}/pages/{number:int}", async (int id, int number, ComicReaderDbContext db) =>
+        {
+            var comic = await db.Comics.FindAsync(id);
+            if (comic is null) return Results.NotFound();
+
+            var page = await db.Pages.FirstOrDefaultAsync(p => p.ComicId == id && p.Number == number);
+            if (page is null) return Results.NotFound();
+
+            if (!File.Exists(comic.FilePath)) return Results.NotFound();
+
+            var bytes = CbzImporter.ReadPageBytes(comic.FilePath, page.EntryName);
+            if (bytes is null) return Results.NotFound();
+
+            return Results.File(bytes, ContentTypeFor(page.EntryName));
+        });
+
         return app;
     }
+
+    private static string ContentTypeFor(string fileName) => Path.GetExtension(fileName).ToLowerInvariant() switch
+    {
+        ".png" => "image/png",
+        ".webp" => "image/webp",
+        ".gif" => "image/gif",
+        ".bmp" => "image/bmp",
+        _ => "image/jpeg",
+    };
 }

@@ -22,4 +22,16 @@ public static class CbzImporter
             .Select((name, index) => new Page { Number = index + 1, EntryName = name })
             .ToList();
     }
+
+    public static byte[]? ReadPageBytes(string filePath, string entryName)
+    {
+        using var zip = ZipFile.OpenRead(filePath);
+        var entry = zip.GetEntry(entryName);
+        if (entry is null) return null;
+
+        using var entryStream = entry.Open();
+        using var memory = new MemoryStream();
+        entryStream.CopyTo(memory);
+        return memory.ToArray();
+    }
 }
