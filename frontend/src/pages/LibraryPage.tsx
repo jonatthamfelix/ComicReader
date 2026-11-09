@@ -1,12 +1,10 @@
-﻿import { useEffect, useState } from 'react'
-import type { FormEvent } from 'react'
-import { Link } from 'react-router'
-import { apiGet, apiPost } from '../api/client'
-import type { Comic, ComicInput } from '../types/comic'
+﻿import { useEffect, useMemo, useState } from 'react'
+import { apiGet } from '../api/client'
+import { ComicCard } from '../components/ComicCard'
+import type { Comic } from '../types/comic'
 
 export function LibraryPage() {
   const [comics, setComics] = useState<Comic[]>([])
-  const [filePath, setFilePath] = useState('')
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
 
@@ -17,49 +15,59 @@ export function LibraryPage() {
       .finally(() => setLoading(false))
   }, [])
 
-  async function handleImport(event: FormEvent) {
-    event.preventDefault()
-    setError('')
-    try {
-      const input: ComicInput = { filePath }
-      const comic = await apiPost<Comic>('/comics', input)
-      setComics((current) => [...current, comic])
-      setFilePath('')
-    } catch (e) {
-      setError((e as Error).message)
+  const { recent, rest } = useMemo(() => {
+    const withProgress = comics
+      .filter((comic) => comic.lastReadAt)
+      .sort((a, b) => (b.lastReadAt ?? '').localeCompare(a.lastReadAt ?? ''))
+    const recentSlice = withProgress.slice(0, 6)
+    return {
+      recent: recentSlice,
+      rest: comics.filter((comic) => !recentSlice.includes(comic)),
     }
-  }
+  }, [comics])
+
+  if (error) return <main><p className="error">{error}</p></main>
+  if (loading) return <main><p>Carregando...</p></main>
 
   return (
     <main>
-      <h1>ComicReader</h1>
+      <h1>Biblioteca</h1>
 
-      <form onSubmit={handleImport} className="import">
-        <input
-          value={filePath}
-          onChange={(event) => setFilePath(event.target.value)}
-          placeholder="C:\Users\voce\Downloads\quadrinho.cbz ou .cbr"
-          aria-label="Caminho do arquivo .cbz"
-        />
-        <button type="submit" disabled={!filePath.trim()}>
-          Importar
-        </button>
-      </form>
+      {comics.length === 0 && (
+        <p className="empty">
+          Nenhum quadrinho ainda. Vá em <strong>Importar</strong> no menu.
+        </p>
+      )}
 
-      {error && <p className="error">{error}</p>}
-      {loading && <p>Carregando...</p>}
-      {!loading && comics.length === 0 && <p>Nenhum quadrinho ainda.</p>}
+      {recent.length > 0 && (
+        <section>
+          <h2>Continue lendo</h2>
+          <div className="grid">
+            {recent.map((comic) => (
+              <ComicCard
+                key={comic.id}
+                comic={comic}
+                progress={comic.lastPageNumber ? comic.lastPageNumber / comic.pages.length : 0}
+              />
+            ))}
+          </div>
+        </section>
+      )}
 
-      <ul className="library">
-        {comics.map((comic) => (
-          <li key={comic.id}>
-            <Link to={`/comics/${comic.id}/pages/1`}>
-              <strong>{comic.title}</strong>
-              <span>{comic.pages.length} páginas</span>
-            </Link>
-          </li>
-        ))}
-      </ul>
+      {rest.length > 0 && (
+        <section>
+          <h2>{recent.length > 0 ? 'Todos' : 'Quadrinhos'}</h2>
+          <div className="grid">
+            {rest.map((comic) => (
+              <ComicCard
+                key={comic.id}
+                comic={comic}
+                progress={comic.lastPageNumber ? comic.lastPageNumber / comic.pages.length : 0}
+              />
+            ))}
+          </div>
+        </section>
+      )}
     </main>
   )
 }

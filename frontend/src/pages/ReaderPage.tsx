@@ -39,12 +39,12 @@ export function ReaderPage() {
   if (!comic) return <main><p>Carregando...</p></main>
 
   return (
-    <main>
+    <div className="reader">
       <header className="reader-header">
         <Link to="/">← Biblioteca</Link>
-        <strong>{comic.title}</strong>
-        <span>
-          Página {pageNumber} de {comic.pages.length}
+        <strong className="reader-title">{comic.title}</strong>
+        <span className="reader-counter">
+          {pageNumber} / {comic.pages.length}
         </span>
       </header>
 
@@ -62,6 +62,6 @@ export function ReaderPage() {
           Próxima
         </button>
       </nav>
-    </main>
+    </div>
   )
 }

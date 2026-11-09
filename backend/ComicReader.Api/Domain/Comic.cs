@@ -8,4 +8,7 @@ public class Comic
 
     public string FilePath { get; set; } = string.Empty;
     public List<Page> Pages { get; set; } = [];
+
+    public DateTime? LastReadAt { get; set; }
+    public int? LastPageNumber { get; set; }
 }

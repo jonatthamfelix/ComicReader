@@ -10,6 +10,8 @@ export type Comic = {
   title: string
   filePath: string
   pages: Page[]
+  lastPageNumber: number | null
+  lastReadAt: string | null
 }
 
 export type ComicInput = {
