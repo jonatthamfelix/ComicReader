@@ -115,7 +115,7 @@
 }
 
 .card-title {
-  font-size: 0.85rem;
+  font-size: 0.9rem;
   line-height: 1.3;
   display: -webkit-box;
   -webkit-line-clamp: 2;
@@ -181,10 +181,16 @@
 
 /* ---------- reader ---------- */
 .reader {
-  min-height: 100vh;
+  height: 100vh;
+  height: 100dvh;
   display: flex;
   flex-direction: column;
   background: #000;
+  overflow: hidden;
+}
+
+.reader:fullscreen {
+  height: 100vh;
 }
 
 .reader-header {
@@ -192,12 +198,10 @@
   align-items: center;
   justify-content: space-between;
   gap: 1rem;
-  padding: 0.75rem 1rem;
+  padding: 0.6rem 1rem;
   background: var(--panel);
   border-bottom: 1px solid var(--line);
-  position: sticky;
-  top: 0;
-  z-index: 2;
+  flex: 0 0 auto;
 }
 
 .reader-header a {
@@ -223,21 +227,73 @@
   white-space: nowrap;
 }
 
-.reader-image {
+.reader-scroll {
+  flex: 1 1 auto;
+  min-height: 0;
+  min-width: 0;
+  overflow: auto;
   display: block;
-  max-width: 100%;
-  max-height: calc(100vh - 3.5rem);
-  margin: auto;
+  background: #000;
 }
 
-.reader-nav {
-  position: fixed;
-  inset: auto 0 0 0;
+.reader-image {
+  display: block;
+  margin: 0 auto;
+  max-width: none;
+  cursor: zoom-in;
+  user-select: none;
+}
+
+.reader-image:active {
+  cursor: grabbing;
+}
+
+.reader-toolbar {
+  flex: 0 0 auto;
   display: flex;
+  align-items: center;
   justify-content: center;
-  gap: 1rem;
-  padding: 0.75rem;
-  background: linear-gradient(transparent, rgba(0, 0, 0, 0.75));
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  padding: 0.6rem 0.75rem;
+  background: var(--panel);
+  border-top: 1px solid var(--line);
+  position: relative;
+  z-index: 2;
+}
+
+.reader-toolbar button {
+  background: rgba(30, 30, 40, 0.92);
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  padding: 0.45rem 0.7rem;
+  min-width: 2.4rem;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text);
+}
+
+.reader-toolbar button:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+.reader-toolbar button.active {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+
+.reader-zoom {
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+}
+
+.reader-percent {
+  min-width: 3.2rem;
+  text-align: center;
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  color: var(--muted);
 }
 
 /* ---------- mobile ---------- */
@@ -279,5 +335,10 @@
 
   .reader-header .reader-title {
     font-size: 0.85rem;
+  }
+
+  .reader-toolbar button {
+    padding: 0.4rem 0.55rem;
+    font-size: 0.78rem;
   }
 }

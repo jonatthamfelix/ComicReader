@@ -8,6 +8,7 @@
   --accent: #e8453c;
 
   font-family: system-ui, 'Segoe UI', Roboto, sans-serif;
+  font-size: 17px;
   line-height: 1.5;
   color-scheme: dark;
   color: var(--text);
