@@ -47,6 +47,8 @@ Duas opções.
 
 Gera `dist\ComicReader\ComicReader.Api.exe` (~119 MB, inclui o runtime). Dê dois cliques: ele sobe em http://localhost:5039 e abre o navegador sozinho — **sem janela de prompt**.
 
+Ícone: se existir `%LOCALAPPDATA%\ComicReader\ComicReader.ico`, ele é embutido no executável durante o publish (o arquivo não fica no repositório).
+
 Comportamento:
 
 - Se já estiver rodando, o segundo clique só reabre o navegador (não cria outra instância).

@@ -27,11 +27,16 @@ Copy-Item (Join-Path $web 'dist\*') $wwwroot -Recurse
 
 Write-Host '==> Publicando executável' -ForegroundColor Cyan
 if (Test-Path $out) { Remove-Item $out -Recurse -Force }
+
+# ícone opcional (fora do repositório, gerado localmente em %LOCALAPPDATA%\ComicReader)
+$icon = Join-Path $env:LOCALAPPDATA 'ComicReader\ComicReader.ico'
+$iconArg = if (Test-Path $icon) { "-p:ApplicationIcon=$icon" } else { '' }
+
 Push-Location $api
 try {
     dotnet publish -c Release -r win-x64 --self-contained true `
         -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true `
-        -p:OutputType=WinExe -p:DebugType=none -o $out
+        -p:OutputType=WinExe -p:DebugType=none $iconArg -o $out
     if ($LASTEXITCODE -ne 0) { throw 'dotnet publish falhou' }
 } finally {
     Pop-Location
