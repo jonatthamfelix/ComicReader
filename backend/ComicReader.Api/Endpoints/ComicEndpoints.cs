@@ -28,13 +28,22 @@ public static class ComicEndpoints
                     ? Path.GetFileNameWithoutExtension(input.FilePath)
                     : input.Title.Trim(),
                 FilePath = input.FilePath,
-                Pages = CbzImporter.ReadPages(input.FilePath)
+                Pages = ComicImporter.ReadPages(input.FilePath)
             };
 
             db.Comics.Add(comic);
             await db.SaveChangesAsync();
 
             return Results.Created($"/api/comics/{comic.Id}", comic);
+        });
+
+        app.MapGet("/api/comics/{id:int}", async (int id, ComicReaderDbContext db) =>
+        {
+            var comic = await db.Comics
+                .Include(c => c.Pages.OrderBy(p => p.Number))
+                .FirstOrDefaultAsync(c => c.Id == id);
+
+            return comic is null ? Results.NotFound() : Results.Ok(comic);
         });
 
         app.MapGet("/api/comics/{id:int}/pages/{number:int}", async (int id, int number, ComicReaderDbContext db) =>
@@ -47,7 +56,7 @@ public static class ComicEndpoints
 
             if (!File.Exists(comic.FilePath)) return Results.NotFound();
 
-            var bytes = CbzImporter.ReadPageBytes(comic.FilePath, page.EntryName);
+            var bytes = ComicImporter.ReadPageBytes(comic.FilePath, page.EntryName);
             if (bytes is null) return Results.NotFound();
 
             return Results.File(bytes, ContentTypeFor(page.EntryName));
