@@ -37,6 +37,20 @@ dotnet ef database update
 
 ## Como rodar
 
+Duas opções.
+
+### Instalador / executável (uso normal)
+
+```
+.\publish.ps1
+```
+
+Gera `dist\ComicReader\ComicReader.Api.exe` (~119 MB, inclui o runtime). Dê dois cliques: ele sobe em http://localhost:5039 e abre o navegador sozinho. Pode criar um atalho na área de trabalho.
+
+Pré-requisito: SQL Server LocalDB instalado na máquina.
+
+### Desenvolvimento
+
 Terminal 1 (API em http://localhost:5039):
 
 ```

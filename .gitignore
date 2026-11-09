@@ -60,6 +60,13 @@ dlldata.c
 # Benchmark Results
 BenchmarkDotNet.Artifacts/
 
+# build output (frontend e publish do executável)
+dist/
+publish-output/
+
+# SPA copiada no publish (gerada por publish.ps1)
+backend/ComicReader.Api/wwwroot/
+
 # .NET
 project.lock.json
 project.fragment.lock.json
