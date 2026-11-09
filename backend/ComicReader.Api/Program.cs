@@ -23,8 +23,6 @@ app.MapFallbackToFile("index.html");
 // publicado (sem launchSettings) abre o navegador sozinho; em dev quem abre é o Vite
 if (app.Environment.IsProduction())
 {
-    Console.Title = "ComicReader — feche esta janela para sair";
-
     var url = app.Urls.FirstOrDefault() ?? "http://localhost:5039";
     var port = new Uri(url).Port;
 
@@ -38,7 +36,16 @@ if (app.Environment.IsProduction())
     app.Lifetime.ApplicationStarted.Register(() => OpenBrowser(url));
 }
 
-app.Run();
+try
+{
+    app.Run();
+}
+catch (Exception ex)
+{
+    // sem console, o erro precisa ir para algum lugar visível
+    LogCrash(ex);
+    throw;
+}
 
 static bool IsListening(int port)
 {
@@ -56,3 +63,20 @@ static bool IsListening(int port)
 
 static void OpenBrowser(string url) =>
     Process.Start(new ProcessStartInfo(url) { UseShellExecute = true });
+
+static void LogCrash(Exception ex)
+{
+    try
+    {
+        var dir = Path.Combine(
+            Environment.GetFolderPath(Environment.SpecialFolder.LocalApplicationData), "ComicReader");
+        Directory.CreateDirectory(dir);
+        File.AppendAllText(
+            Path.Combine(dir, "error.log"),
+            $"[{DateTime.Now:yyyy-MM-dd HH:mm:ss}] {ex}{Environment.NewLine}{Environment.NewLine}");
+    }
+    catch
+    {
+        // se nem o log funcionar, não há mais o que fazer
+    }
+}

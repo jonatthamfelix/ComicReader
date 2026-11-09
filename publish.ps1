@@ -31,7 +31,7 @@ Push-Location $api
 try {
     dotnet publish -c Release -r win-x64 --self-contained true `
         -p:PublishSingleFile=true -p:IncludeNativeLibrariesForSelfExtract=true `
-        -p:DebugType=none -o $out
+        -p:OutputType=WinExe -p:DebugType=none -o $out
     if ($LASTEXITCODE -ne 0) { throw 'dotnet publish falhou' }
 } finally {
     Pop-Location

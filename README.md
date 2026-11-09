@@ -45,7 +45,13 @@ Duas opções.
 .\publish.ps1
 ```
 
-Gera `dist\ComicReader\ComicReader.Api.exe` (~119 MB, inclui o runtime). Dê dois cliques: ele sobe em http://localhost:5039 e abre o navegador sozinho. Pode criar um atalho na área de trabalho.
+Gera `dist\ComicReader\ComicReader.Api.exe` (~119 MB, inclui o runtime). Dê dois cliques: ele sobe em http://localhost:5039 e abre o navegador sozinho — **sem janela de prompt**.
+
+Comportamento:
+
+- Se já estiver rodando, o segundo clique só reabre o navegador (não cria outra instância).
+- Ele fica em segundo plano. Para encerrar: Gerenciador de Tarefas → `ComicReader.Api` → Finalizar tarefa. Deixar rodando é inofensivo e até melhor: o próximo clique é instantâneo.
+- Erros vão para `%LOCALAPPDATA%\ComicReader\error.log`.
 
 Pré-requisito: SQL Server LocalDB instalado na máquina.
 
